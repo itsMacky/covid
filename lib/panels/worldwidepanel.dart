@@ -10,6 +10,7 @@ class WorldwidePanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: GridView(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -41,7 +42,7 @@ class WorldwidePanel extends StatelessWidget {
             count: worldData['deaths'].toString(),
           ),
           StatusPanel(
-            title: 'TODAY ACTIVE CASES',
+            title: "TODAY CASES",
             panelColor: Color(0xff292c4b),
             textColor: Colors.blueAccent,
             count: worldData['todayCases'].toString(),

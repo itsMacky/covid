@@ -1,3 +1,5 @@
+import 'package:covid/pages/search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -9,9 +11,10 @@ class CountryPage extends StatefulWidget {
 
 class _CountryPageState extends State<CountryPage> {
   List countryData;
+
   fetchCountryData() async {
     http.Response response =
-        await http.get('https://corona.lmao.ninja/v2/countries');
+    await http.get('https://corona.lmao.ninja/v2/countries');
     setState(() {
       countryData = json.decode(response.body);
     });
@@ -28,7 +31,13 @@ class _CountryPageState extends State<CountryPage> {
     return Scaffold(
       backgroundColor: Color(0xff000023),
       appBar: AppBar(
-        title: Text('Country Stats'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.search), onPressed: () {
+            showSearch(context: context, delegate: Search(countryData));
+          },),
+        ],
+        title: Text(
+          'Country Stats', style: TextStyle(fontWeight: FontWeight.bold),),
         backgroundColor: Colors.black,
       ),
       body: countryData==null?Center(child: CircularProgressIndicator(),):ListView.builder(
@@ -43,12 +52,18 @@ class _CountryPageState extends State<CountryPage> {
             child: Row(
               children: <Widget>[
                 Container(
+                  width: 200,
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(countryData[index]['country'],style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
-                      Image.network(countryData[index]['countryInfo']['flag'],height: 50,width: 60,),
+                      Text(countryData[index]['country'],
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight
+                            .bold, color: Colors.white),),
+                      Image.network(
+                        countryData[index]['countryInfo']['flag'], height: 50,
+                        width: 70,),
                     ],
                   ) ,
                 ),

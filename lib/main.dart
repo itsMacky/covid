@@ -7,7 +7,7 @@ void main(){
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       fontFamily: 'Quicksand',
-      primaryColor: primaryBlack
+      primaryColor: primaryBlack,
     ),
     home: HomePage(),
   ));
