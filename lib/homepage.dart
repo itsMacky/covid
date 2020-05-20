@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:covid/pages/countrypage.dart';
-import 'package:covid/panels/infoPanel.dart';
 import 'package:covid/panels/mostaffectedcountries.dart';
 import 'package:covid/panels/worldwidepanel.dart';
 import 'package:flutter/material.dart';
@@ -19,23 +18,23 @@ class _HomePageState extends State<HomePage> {
   Map worldData;
   fetchWorldWideData() async {
     http.Response response = await http.get('https://corona.lmao.ninja/v2/all');
-    setState(() {
-      worldData = json.decode(response.body);
-    });
+    // setState(() {
+    worldData = json.decode(response.body);
+    // });
   }
 
   List countryData;
   fetchCountryData() async {
     http.Response response =
     await http.get('https://corona.lmao.ninja/v2/countries?sort=cases');
-    setState(() {
-      countryData = json.decode(response.body);
-    });
+    // setState(() {
+    countryData = json.decode(response.body);
+    // });
   }
 
   Future fetchData() async {
-    fetchWorldWideData();
-    fetchCountryData();
+    await fetchWorldWideData();
+    await fetchCountryData();
     print('Refreshed!!!');
   }
 
@@ -139,9 +138,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Center(
-                  child: worldData == null
-                      ? CircularProgressIndicator()
-                      : WorldwidePanel(
+                  child: WorldwidePanel(
                     worldData: worldData,
                   )),
               SizedBox(
