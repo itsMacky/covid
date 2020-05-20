@@ -14,6 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var _isLoading = false;
+
   Map worldData;
   fetchWorldWideData() async {
     http.Response response = await http.get('https://corona.lmao.ninja/v2/all');
@@ -25,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   List countryData;
   fetchCountryData() async {
     http.Response response =
-        await http.get('https://corona.lmao.ninja/v2/countries?sort=cases');
+    await http.get('https://corona.lmao.ninja/v2/countries?sort=cases');
     setState(() {
       countryData = json.decode(response.body);
     });
@@ -37,14 +39,18 @@ class _HomePageState extends State<HomePage> {
     print('Refreshed!!!');
   }
 
-
-
-
-
-
   @override
   void initState() {
-    fetchData();
+    setState(() {
+      _isLoading = true;
+    });
+
+    fetchData().then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+
     super.initState();
   }
 
@@ -55,21 +61,24 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
-          'COVID-19 TRACKER', style: TextStyle(fontWeight: FontWeight.bold),),
+          'COVID-19 TRACKER',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
-      body: RefreshIndicator(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
         onRefresh: fetchData,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-
                     Text(
                       'WORLDWIDE',
                       style: TextStyle(
@@ -108,10 +117,7 @@ class _HomePageState extends State<HomePage> {
                     chartLegendSpacing: 32.0,
                     legendStyle: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
-                    chartRadius: MediaQuery
-                        .of(context)
-                        .size
-                        .width / 2.7,
+                    chartRadius: MediaQuery.of(context).size.width / 2.7,
                     chartValueBackgroundColor: Colors.white,
                     chartValueStyle: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
@@ -123,13 +129,11 @@ class _HomePageState extends State<HomePage> {
                       'RECOVERED': worldData['recovered'].toDouble(),
                       'DEATHS': worldData['deaths'].toDouble(),
                     },
-
                     colorList: [
                       Color(0xffffc400),
                       Color(0xff7a42d5),
                       Colors.green,
                       Colors.red,
-
                     ],
                   ),
                 ),
@@ -160,7 +164,9 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: countryData == null
                     ? CircularProgressIndicator()
-                    : MostAffectedPanel(countryData: countryData,),
+                    : MostAffectedPanel(
+                  countryData: countryData,
+                ),
               ),
               SizedBox(
                 height: 20,
